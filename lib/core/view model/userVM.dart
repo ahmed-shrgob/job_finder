@@ -8,7 +8,7 @@ class UserVM {
   Future<User> getUserData() async {
     Dio dio = Dio();
     print(userId);
-    Response<Map<String, dynamic>> response =
+    Response response =
         await dio.get(APIRoute.getUserData(userId));
     user = User.fromJson(response.data!);
     return user;

@@ -160,7 +160,7 @@ class CompanySignupScreen extends StatelessWidget {
                               name: _nameController.text,
                               email: _emailController.text,
                               password: _passwordController.text,
-                              location: dropdownProvidor.cityValue,
+                              // location: dropdownProvidor.cityValue,
                               employeeCount:
                                   dropdownProvidor.employeeCountValue,
                               categorey: _categoreyController.text,

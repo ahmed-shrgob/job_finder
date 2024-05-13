@@ -6,6 +6,7 @@ import 'package:job_finder/core/model/job_model.dart';
 class JobVM extends ChangeNotifier {
   late Job job;
   late List<Job> companyJobs;
+  late List latestJobs;
   final Dio dio = Dio();
   List experience = [];
   List skills = [];
@@ -39,6 +40,18 @@ class JobVM extends ChangeNotifier {
     } catch (e) {
       print(e);
       return companyJobs;
+    }
+  }
+  Future<List> getLatestJobs() async {
+    try {
+      Response response = await dio.get(APIRoute.getLatestJobs);
+      print(response.data);
+      latestJobs = response.data['jobs']!.map((value) => Job.fromJson(value)).toList();
+      print(latestJobs);
+      return latestJobs;
+    } catch (e) {
+      print('the err $e');
+      return latestJobs;
     }
   }
 

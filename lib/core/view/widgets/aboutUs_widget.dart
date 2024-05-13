@@ -34,7 +34,8 @@ class AboutUsWidget extends StatelessWidget {
                     ),
                     TitleWidget(text: 'المكان'),
                     Text(
-                     '${snapshot.data!.location}',
+                      "snapshot.data!.location",
+                    //  '${snapshot.data!.location}',
                       style: TextStyle(
                         fontSize: width * 0.035,
                         color: Color(0xff8B8B8B),

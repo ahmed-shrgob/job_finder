@@ -5,15 +5,11 @@ import 'package:job_finder/constants/cons_user_data.dart';
 import 'package:job_finder/core/model/CV_model.dart';
 
 class CVVM extends ChangeNotifier {
-  CVModel cv = CVModel(
-      userID: null,
-      fullName: null,
-      address: null,
-      phone: null,
-      email: null,
-      skills: null,
-      certificate: null,
-      experience: null);
+  late CVModel cv;
+  List skills = [];
+  List experience = [];
+  List certificate = [];
+
   void createCV(CVModel cv) async {
     Dio dio = Dio();
     Response res = await dio.post(APIRoute.createCV, data: cv.toJson());
@@ -41,8 +37,7 @@ class CVVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  void update(CVModel edetCV) {
-    edetCV = cv;
+  void update() {
     notifyListeners();
   }
 }

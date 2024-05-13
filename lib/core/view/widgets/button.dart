@@ -18,6 +18,7 @@ class ButtonWidget extends StatelessWidget {
         width: double.infinity,
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(
+              elevation: 0,
                 padding: EdgeInsetsDirectional.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15)),

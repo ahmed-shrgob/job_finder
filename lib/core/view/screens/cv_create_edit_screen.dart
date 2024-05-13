@@ -128,7 +128,7 @@ class CVCreateEditScreen extends StatelessWidget {
                     ),
                   ),
                   CVAddButtonWidget(
-                    cvList: cvVM.cv.certificate!,
+                    cvList: cvVM.certificate,
                     textFormWidget: Column(
                       children: [
                         TitleWidget(
@@ -148,13 +148,14 @@ class CVCreateEditScreen extends StatelessWidget {
                       ],
                     ),
                     onPressed: () {
-                      if (_CVglobalKey.currentState!.validate()) {
-                        cvVM.cv.certificate!.add(certificateController.text);
+                      if (certificateController.text.isNotEmpty) {
+                        cvVM.certificate.add(certificateController.text);
                         certificateController.clear();
-                        cvVM.update(cvVM.cv);
+                        cvVM.update();
                         Navigator.pop(context);
                       }
-                    }, isEdit: isEdit,
+                    },
+                    isEdit: isEdit,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -163,7 +164,7 @@ class CVCreateEditScreen extends StatelessWidget {
                     ),
                   ),
                   CVAddButtonWidget(
-                    cvList: cvVM.cv.skills!,
+                    cvList: cvVM.skills,
                     textFormWidget: Column(
                       children: [
                         TitleWidget(
@@ -183,13 +184,14 @@ class CVCreateEditScreen extends StatelessWidget {
                       ],
                     ),
                     onPressed: () {
-                      if (_CVglobalKey.currentState!.validate()) {
-                        cvVM.cv.skills!.add(skillsController.text);
-                        cvVM.update(cvVM.cv);
+                      if (skillsController.text.isNotEmpty) {
+                        cvVM.skills.add(skillsController.text);
+                        cvVM.update();
                         skillsController.clear();
                         Navigator.pop(context);
                       }
-                    }, isEdit: isEdit,
+                    },
+                    isEdit: isEdit,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -198,7 +200,7 @@ class CVCreateEditScreen extends StatelessWidget {
                     ),
                   ),
                   CVAddButtonWidget(
-                    cvList: cvVM.cv.experience!,
+                    cvList: cvVM.experience,
                     textFormWidget: Column(
                       children: [
                         TitleWidget(
@@ -218,13 +220,14 @@ class CVCreateEditScreen extends StatelessWidget {
                       ],
                     ),
                     onPressed: () {
-                      if (_CVglobalKey.currentState!.validate()) {
-                        cvVM.cv.experience!.add(experienceController.text);
+                      if (experienceController.text.isNotEmpty) {
+                        cvVM.experience.add(experienceController.text);
                         experienceController.clear();
-                        cvVM.update(cvVM.cv);
+                        cvVM.update();
                         Navigator.pop(context);
                       }
-                    }, isEdit: isEdit,
+                    },
+                    isEdit: isEdit,
                   ),
                   ButtonWidget(
                       onPressed: () {
@@ -237,17 +240,11 @@ class CVCreateEditScreen extends StatelessWidget {
                                     address: addressController.text,
                                     phone: phoneController.text,
                                     email: emailController.text,
-                                    skills: cvVM.cv.skills,
-                                    certificate: cvVM.cv.certificate,
-                                    experience: cvVM.cv.experience),
+                                    skills: cvVM.skills,
+                                    certificate: cvVM.certificate,
+                                    experience: cvVM.experience),
                                 cvId);
-                            cvVM.update(cvVM.cv);
-
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CVProfileScreen(),
-                                ));
+                            Navigator.pop(context, true);
                           } else {
                             cvVM.createCV(CVModel(
                                 userID: userId,
@@ -255,15 +252,10 @@ class CVCreateEditScreen extends StatelessWidget {
                                 address: addressController.text,
                                 phone: phoneController.text,
                                 email: emailController.text,
-                                skills: cvVM.cv.skills,
-                                certificate: cvVM.cv.certificate,
-                                experience: cvVM.cv.experience));
-                            cvVM.update(cvVM.cv);
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CVProfileScreen(),
-                                ));
+                                skills: cvVM.skills,
+                                certificate: cvVM.certificate,
+                                experience: cvVM.experience));
+                            Navigator.pop(context, true);
                           }
                         }
                       },

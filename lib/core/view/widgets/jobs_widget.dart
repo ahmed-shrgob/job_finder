@@ -8,19 +8,20 @@ import '../../../constants/cons_size.dart';
 
 class JobWidget extends StatelessWidget {
   final Job jobModel;
-  final String jobID;
+  // final String jobID;
   final String companyName;
-  final String JobName;
-  final String location;
-  final String createdAt;
-  final String bio;
+  // final String JobName;
+  // final String location;
+  // final String createdAt;
+  // final String bio;
   JobWidget({
     super.key,
     required this.companyName,
-    required this.JobName,
-    required this.location,
-    required this.createdAt,
-    required this.bio, required this.jobID, required this.jobModel,
+    // required this.JobName,
+    // required this.location,
+    // required this.createdAt,
+    // required this.bio, required this.jobID,
+    required this.jobModel,
   });
   final JobVM jobVM = JobVM();
 
@@ -66,7 +67,7 @@ class JobWidget extends StatelessWidget {
                                 fontSize: width * 0.035, color: Colors.grey),
                           ),
                           subtitle: Text(
-                            JobName,
+                            '${jobModel.name}',
                             style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -76,7 +77,7 @@ class JobWidget extends StatelessWidget {
                             child: Column(
                               children: [
                                 Text(
-                                  location,
+                                  '${jobModel.location}',
                                   style: TextStyle(
                                     fontSize: width * 0.03,
                                     color: Colors.grey,
@@ -85,7 +86,7 @@ class JobWidget extends StatelessWidget {
                                 ),
                                 Text(
                                   // '${snapshot.data![index].createdAt}',
-                                  "${timeago.format(DateTime.parse(createdAt), locale: 'ar')}",
+                                  "${timeago.format(DateTime.parse(jobModel.createdAt!), locale: 'ar')}",
                                   style: TextStyle(
                                     fontSize: width * 0.03,
                                     color: AppColor.primaryColor,
@@ -104,7 +105,7 @@ class JobWidget extends StatelessWidget {
                             child: Text(
                               maxLines: 3,
                               overflow:TextOverflow.ellipsis ,
-                              bio,
+                              '${jobModel.bio}',
                               style: TextStyle(
                                 fontSize: width * 0.03,
                                 color: Colors.black,

@@ -2,6 +2,7 @@ class Job {
   String? id;
   String? IDUser;
   String? name;
+  String? companyName;
   String? location;
   String? bio;
   String? workSchedule;
@@ -30,6 +31,7 @@ class Job {
     id = json["_id"];
     IDUser = json["IDUser"];
     name = json["name"];
+    companyName = json["companyName"];
     location = json["location"];
     bio = json["bio"];
     workSchedule = json["workSchedule"];

@@ -5,7 +5,7 @@ class User {
   String? name;
   String? type;
   // String? image;
-  String? location;
+  // String? location;
   String? categorey;
   String? gender;
   String? bio;
@@ -18,7 +18,7 @@ class User {
       this.name,
       this.type,
       // this.image,
-      this.location,
+      // this.location,
       this.categorey,
       this.gender,
       this.bio,
@@ -31,7 +31,7 @@ class User {
     name = Json["name"];
     type = Json["type"];
     // image = Json["image"];
-    location = Json["location"];
+    // location = Json["location"];
     categorey = Json["categorey"];
     gender = Json["gender"];
     bio = Json["bio"];
@@ -45,7 +45,7 @@ class User {
       "name": name,
       "type": userType,
       // "image": image,
-      "location": location,
+      // "location": location,
       "categorey": categorey,
       "gender": gender,
       "bio": bio,

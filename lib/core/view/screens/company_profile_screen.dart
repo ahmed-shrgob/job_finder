@@ -22,7 +22,6 @@ class CompanyProfilScreen extends StatefulWidget {
 class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
   final UserVM userVM = UserVM();
 
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -148,12 +147,7 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
                               return JobWidget(
-                                jobID: '${snapshot.data![index].id}',
                                 companyName: userVM.user.name!,
-                                JobName: '${snapshot.data![index].name}',
-                                location: '${snapshot.data![index].location}',
-                                createdAt: '${snapshot.data![index].createdAt}',
-                                bio: '${snapshot.data![index].bio}',
                                 jobModel: snapshot.data![index],
                               );
                             },

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:job_finder/constants/cons_colors.dart';
 import 'package:job_finder/constants/cons_user_data.dart';
+import 'package:job_finder/core/view%20model/jobVM.dart';
 import 'package:job_finder/core/view/screens/company_profile_screen.dart';
 import 'package:job_finder/core/view/screens/cv_profile_screen.dart';
 import 'package:job_finder/core/view/screens/filter_screen.dart';
+import 'package:job_finder/core/view/widgets/button.dart';
 import 'package:job_finder/core/view/widgets/title_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants/cons_size.dart';
 import '../widgets/jobs_widget.dart';
@@ -169,6 +172,14 @@ class HomePageScreen extends StatelessWidget {
                 ),
               ),
               Padding(
+               padding: const EdgeInsets.all(8.0),
+               child: Center(
+                 child: GradientButtonFb4(onPressed: () {
+                   
+                 },text: 'طلبات الوظائف ',),
+               ),
+             ),
+              Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 child: TitleWidget(
@@ -242,10 +253,83 @@ class HomePageScreen extends StatelessWidget {
                 ),
               ),
               // JobWidget(),
+              Consumer<JobVM>(builder: (context, value, child) {
+                  return FutureBuilder(
+                    future: value.getLatestJobs(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done &&
+                          snapshot.hasData) {
+                        return SingleChildScrollView(
+                          child: ListView.builder(
+                            // reverse: true,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              return JobWidget(
+                                companyName: "${snapshot.data![index].companyName}",
+                                jobModel: snapshot.data![index],
+                              );
+                            },
+                          ),
+                        );
+                      } else if (snapshot.connectionState ==
+                              ConnectionState.done &&
+                          !snapshot.hasData) {
+                        return Text('تأكد من اتصالك بالانترنت');
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: AppColor.primaryColor,
+                          ),
+                        );
+                      }
+                    },
+                  );
+                }),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+
+
+
+class GradientButtonFb4 extends StatelessWidget {
+  final String text;
+  final Function() onPressed;
+
+  const GradientButtonFb4(
+      {required this.text, required this.onPressed, Key? key})
+      : super(key: key);
+
+  final double borderRadius = 25;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(borderRadius),
+            gradient:  LinearGradient(
+                colors: [AppColor.primaryColor,Color.fromARGB(255, 255, 180, 67)])),
+        child: ElevatedButton(
+            style: ButtonStyle(
+                elevation: MaterialStateProperty.all(0),
+                alignment: Alignment.center,
+                padding: MaterialStateProperty.all(const EdgeInsets.only(
+                    right: 75, left: 75, top: 15, bottom: 15)),
+                backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(borderRadius)),
+                )),
+            onPressed: onPressed,
+            child: Text(
+              text,
+              style: const TextStyle(color: Colors.white),
+            )));
   }
 }
