@@ -16,15 +16,18 @@ class CVVM extends ChangeNotifier {
     print(res.statusCode);
   }
 
-  Future<CVModel> getCV() async {
+  Future<CVModel> getCV(String id) async {
     Dio dio = Dio();
-    Response res = await dio.get(APIRoute.getCV(userId));
+    Response res = await dio.get(APIRoute.getCV(id));
     print(userId);
     print(res.statusCode);
     print(res.data);
     print(CVModel.fromJson(res.data["cvs"][0]));
     cv = CVModel.fromJson(res.data["cvs"][0]);
     print(cv);
+    skills=cv.skills!;
+    certificate=cv.certificate!;
+    experience=cv.experience!;
     return cv;
   }
 

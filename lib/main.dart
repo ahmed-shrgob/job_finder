@@ -3,9 +3,12 @@ import 'package:get_storage/get_storage.dart';
 import 'package:job_finder/constants/cons_user_data.dart';
 import 'package:job_finder/constants/cons_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:job_finder/core/view%20model/filterVM.dart';
+import 'package:job_finder/core/view%20model/followVM.dart';
 import 'package:job_finder/core/view%20model/jobVM.dart';
 import 'package:job_finder/core/view/screens/loginScreen.dart';
 import 'package:job_finder/core/view/screens/main_screen.dart';
+import 'package:job_finder/core/view/screens/test.dart';
 import 'package:job_finder/helper/company_dropdown_providr.dart';
 import 'package:job_finder/helper/job_dropdown_providr.dart';
 import 'package:provider/provider.dart';
@@ -30,8 +33,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<CVVM>(
           create: (_) => CVVM(),
         ),
+        ChangeNotifierProvider<FilterVM>(
+          create: (_) => FilterVM(),
+        ),
         ChangeNotifierProvider<JobVM>(
           create: (_) => JobVM(),
+        ),
+        ChangeNotifierProvider<FollowVM>(
+          create: (_) => FollowVM(),
         ),
         ChangeNotifierProvider<CompanyDropdownValueProvider>(
           create: (_) => CompanyDropdownValueProvider(),
@@ -43,7 +52,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         // home: MainScreen(),
-        //home: CVCreateScreen(),
+        // home: FilterScreen1(),
         home: userId == null ? LoginScreen() : MainScreen(),
         supportedLocales: [
           const Locale('en'),

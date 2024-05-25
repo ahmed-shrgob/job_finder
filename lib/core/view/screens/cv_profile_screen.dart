@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:job_finder/constants/cons_colors.dart';
 import 'package:job_finder/constants/cons_size.dart';
+import 'package:job_finder/constants/cons_user_data.dart';
 import 'package:job_finder/core/view%20model/cv_VM.dart';
 import 'package:job_finder/core/view/screens/cv_create_edit_screen.dart';
 import 'package:job_finder/core/view/widgets/button.dart';
@@ -10,15 +11,16 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class CVProfileScreen extends StatelessWidget {
+  final String id;
   bool providerListener = false;
-  CVProfileScreen({super.key});
+  CVProfileScreen({super.key, required this.id});
   // CVVM cv = CVVM();
   @override
   Widget build(BuildContext context) {
     // final cv = Provider.of<CVVM>(context, listen: providerListener);
     return Scaffold(
         appBar: AppBar(
-          title: Text('my CV'),
+          title: Text('CV'),
           centerTitle: true,
           elevation: 0,
           backgroundColor: AppColor.appBarColor,
@@ -26,7 +28,7 @@ class CVProfileScreen extends StatelessWidget {
         body: Consumer<CVVM>(
           builder: (context, cv, child) {
             return FutureBuilder(
-              future: cv.getCV(),
+              future: cv.getCV(id),
               builder: (context, snapshot) {
                 print(snapshot.data);
                 print(snapshot.connectionState);
@@ -81,6 +83,7 @@ class CVProfileScreen extends StatelessWidget {
                                           ),
                                         ),
                                       ),
+                                      userId==id?
                                       Expanded(
                                           child: InkWell(
                                         onTap: () => Navigator.push(
@@ -145,7 +148,7 @@ class CVProfileScreen extends StatelessWidget {
                                                 ),
                                               ]),
                                         ),
-                                      )),
+                                      )):Container(),
                                     ],
                                   ),
                                 ],
@@ -190,7 +193,8 @@ class CVProfileScreen extends StatelessWidget {
                     ),
                   );
                 } else if (snapshot.data == null &&
-                    snapshot.connectionState == ConnectionState.done) {
+                    snapshot.connectionState == ConnectionState.done&&!snapshot.hasError) {
+                      print(snapshot.error);
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -224,6 +228,8 @@ class CVProfileScreen extends StatelessWidget {
                       ],
                     ),
                   );
+                } else if (snapshot.hasError&&snapshot.connectionState == ConnectionState.done) {
+                  return Center(child: Text('تاكد من اتصالك بالانترنت'));
                 } else {
                   return Center(child: CircularProgressIndicator());
                 }

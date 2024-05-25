@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:job_finder/constants/cons_API.dart';
@@ -7,6 +9,7 @@ class JobVM extends ChangeNotifier {
   late Job job;
   late List<Job> companyJobs;
   late List latestJobs;
+  late List searchList;
   final Dio dio = Dio();
   List experience = [];
   List skills = [];
@@ -52,6 +55,18 @@ class JobVM extends ChangeNotifier {
     } catch (e) {
       print('the err $e');
       return latestJobs;
+    }
+  }
+  Future<List> searchJobs(String searchText) async {
+    try {
+      Response response = await dio.get(APIRoute.searchJobs(searchText));
+      print(response.data);
+      searchList = response.data['jobs']!.map((value) => Job.fromJson(value)).toList();
+      print(searchList);
+      return searchList;
+    } catch (e) {
+      print('the err $e');
+      return searchList;
     }
   }
 

@@ -3,8 +3,10 @@ import 'package:job_finder/constants/cons_colors.dart';
 import 'package:job_finder/constants/cons_user_data.dart';
 import 'package:job_finder/core/view%20model/jobVM.dart';
 import 'package:job_finder/core/view/screens/company_profile_screen.dart';
+import 'package:job_finder/core/view/screens/company_requests_screen.dart';
 import 'package:job_finder/core/view/screens/cv_profile_screen.dart';
 import 'package:job_finder/core/view/screens/filter_screen.dart';
+import 'package:job_finder/core/view/screens/search_screen.dart';
 import 'package:job_finder/core/view/widgets/button.dart';
 import 'package:job_finder/core/view/widgets/title_widget.dart';
 import 'package:provider/provider.dart';
@@ -75,19 +77,24 @@ class HomePageScreen extends StatelessWidget {
                                     size: width * 0.1,
                                   ),
                                   onPressed: () {
-                                   userType == 'company'
-                                        ? Navigator.push(context,
-                                            MaterialPageRoute(
-                                            builder: (context) {
-                                              return CompanyProfilScreen(id: userId!,);
-                                            },
-                                          ))
-                                        : Navigator.push(context,
-                                            MaterialPageRoute(
-                                            builder: (context) {
-                                              return CVProfileScreen();
-                                            },
-                                          ));
+                                    if (userType == 'company') {
+                                      Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) {
+                                          return CompanyProfilScreen(
+                                            id: userId!,
+                                          );
+                                        },
+                                      ));
+                                    }
+                                    if (userType == 'user') {
+                                      Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) {
+                                          return CVProfileScreen(
+                                            id: userId!,
+                                          );
+                                        },
+                                      ));
+                                    }
                                   },
                                 ),
                               ],
@@ -101,46 +108,21 @@ class HomePageScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            width: width * 0.7,
-                            height: width * 0.1,
-                            child: TextField(
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                              decoration: InputDecoration(
-                                hintText: 'ابحث',
-                                hintStyle: TextStyle(color: Colors.grey),
-                                contentPadding: EdgeInsets.symmetric(
-                                  // vertical: 10,
-                                  horizontal: 20,
-                                ),
-                                fillColor: Colors.white,
-                                filled: true,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.transparent,
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.transparent,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                              ),
+                          InkWell(
+                            onTap: () =>
+                                Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return SearchScreen();
+                              },
+                            )),
+                            child: Container(
+                              height: width * 0.1,
+                              width: width * 0.7,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Icon(Icons.search,
+                                  color: AppColor.primaryColor),
                             ),
                           ),
                           SizedBox(
@@ -171,14 +153,21 @@ class HomePageScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-               padding: const EdgeInsets.all(8.0),
-               child: Center(
-                 child: GradientButtonFb4(onPressed: () {
-                   
-                 },text: 'طلبات الوظائف ',),
-               ),
-             ),
+           userType=='company'?   Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: JobsRequstsButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CompanyRequestsScreen(),
+                          ));
+                    },
+                    text: 'طلبات الوظائف ',
+                  ),
+                ),
+              ):Container(),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -196,7 +185,8 @@ class HomePageScreen extends StatelessWidget {
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CompanyProfilScreen(id: userId!),
+                            builder: (context) =>
+                                CompanyProfilScreen(id: userId!),
                           )),
                       child: Padding(
                         padding:
@@ -254,82 +244,44 @@ class HomePageScreen extends StatelessWidget {
               ),
               // JobWidget(),
               Consumer<JobVM>(builder: (context, value, child) {
-                  return FutureBuilder(
-                    future: value.getLatestJobs(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done &&
-                          snapshot.hasData) {
-                        return SingleChildScrollView(
-                          child: ListView.builder(
-                            // reverse: true,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              return JobWidget(
-                                companyName: "${snapshot.data![index].companyName}",
-                                jobModel: snapshot.data![index],
-                              );
-                            },
-                          ),
-                        );
-                      } else if (snapshot.connectionState ==
-                              ConnectionState.done &&
-                          !snapshot.hasData) {
-                        return Text('تأكد من اتصالك بالانترنت');
-                      } else {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            color: AppColor.primaryColor,
-                          ),
-                        );
-                      }
-                    },
-                  );
-                }),
+                return FutureBuilder(
+                  future: value.getLatestJobs(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        snapshot.hasData) {
+                      return SingleChildScrollView(
+                        child: ListView.builder(
+                          // reverse: true,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            return JobWidget(
+                              companyName:
+                                  "${snapshot.data![index].companyName}",
+                              jobModel: snapshot.data![index],
+                            );
+                          },
+                        ),
+                      );
+                    } else if (snapshot.connectionState ==
+                            ConnectionState.done &&
+                        !snapshot.hasData) {
+                      return Text('تأكد من اتصالك بالانترنت');
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: AppColor.primaryColor,
+                        ),
+                      );
+                    }
+                  },
+                );
+              }),
             ],
           ),
         ),
       ),
     );
-  }
-}
-
-
-
-
-class GradientButtonFb4 extends StatelessWidget {
-  final String text;
-  final Function() onPressed;
-
-  const GradientButtonFb4(
-      {required this.text, required this.onPressed, Key? key})
-      : super(key: key);
-
-  final double borderRadius = 25;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(borderRadius),
-            gradient:  LinearGradient(
-                colors: [AppColor.primaryColor,Color.fromARGB(255, 255, 180, 67)])),
-        child: ElevatedButton(
-            style: ButtonStyle(
-                elevation: MaterialStateProperty.all(0),
-                alignment: Alignment.center,
-                padding: MaterialStateProperty.all(const EdgeInsets.only(
-                    right: 75, left: 75, top: 15, bottom: 15)),
-                backgroundColor: MaterialStateProperty.all(Colors.transparent),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(borderRadius)),
-                )),
-            onPressed: onPressed,
-            child: Text(
-              text,
-              style: const TextStyle(color: Colors.white),
-            )));
   }
 }

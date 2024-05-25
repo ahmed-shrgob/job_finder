@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:job_finder/constants/cons_user_data.dart';
+import 'package:job_finder/core/view%20model/followVM.dart';
 import 'package:job_finder/core/view%20model/jobVM.dart';
 import 'package:job_finder/core/view%20model/userVM.dart';
 import 'package:job_finder/core/view/screens/job_create_screen.dart';
@@ -21,6 +22,7 @@ class CompanyProfilScreen extends StatefulWidget {
 
 class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
   final UserVM userVM = UserVM();
+  // final FollowVM followVM = FollowVM();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
           body: Column(
             children: [
               FutureBuilder(
-                future: userVM.getUserData(),
+                future: userVM.getUserData(widget.id),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done &&
                       snapshot.hasData) {
@@ -74,7 +76,38 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
                                       fontSize: width * 0.035),
                                 ),
                               ),
-                              FollowWidget()
+                              userId != widget.id && userId != null
+                                  ? Consumer<FollowVM>(
+                                      builder: (context, value, child) =>
+                                          FutureBuilder(
+                                        future: value.checkIfUserFollows(
+                                            userId!, widget.id),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData &&
+                                              snapshot.connectionState ==
+                                                  ConnectionState.done) {
+                                            return FollowWidget(
+                                              isFollow: snapshot.data!,
+                                              onTap: () {
+                                                snapshot.data!
+                                                    ? value.unFollow(
+                                                        userId!, widget.id)
+                                                    : value.follow(
+                                                        userId!, widget.id);
+                                                value.update();
+                                              },
+                                            );
+                                          } else {
+                                            return Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                              color: AppColor.primaryColor,
+                                            ));
+                                          }
+                                        },
+                                      ),
+                                    )
+                                  : Container(),
                             ],
                           ),
                         ));
@@ -168,7 +201,9 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
                   );
                 }),
                 PostWidget(),
-                AboutUsWidget(),
+                AboutUsWidget(
+                  userID: widget.id,
+                ),
               ]))
             ],
           ),

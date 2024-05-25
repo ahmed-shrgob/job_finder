@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:job_finder/constants/cons_colors.dart';
 import 'package:job_finder/constants/cons_size.dart';
+import 'package:job_finder/constants/cons_user_data.dart';
 import 'package:job_finder/core/model/job_model.dart';
+import 'package:job_finder/core/view%20model/request_VM.dart';
+import 'package:job_finder/core/view/screens/company_profile_screen.dart';
 import 'package:job_finder/core/view/widgets/button.dart';
 import 'package:job_finder/core/view/widgets/job_info_widget.dart';
 import 'package:job_finder/core/view/widgets/title_widget.dart';
@@ -15,7 +18,8 @@ class JobScreen extends StatelessWidget {
   // final String bio;
   // final String bio;
   // final String bio;
-  const JobScreen({super.key, required this.jobModel, required this.companyName});
+  const JobScreen(
+      {super.key, required this.jobModel, required this.companyName});
 
   @override
   Widget build(BuildContext context) {
@@ -39,40 +43,43 @@ class JobScreen extends StatelessWidget {
                     )),
                 child: Padding(
                   padding: EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Image.asset(
-                            'assets/images/google.png',
-                            fit: BoxFit.contain,
+                  child: InkWell(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyProfilScreen(id: jobModel.IDUser!),)),
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Image.asset(
+                              'assets/images/google.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          backgroundColor: Colors.white,
+                          radius: width * 0.06,
+                        ),
+                        Text(
+                          '${companyName}',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: width * 0.05),
+                        ),
+                        // Text(
+                        //   'uoioiuiouio',
+                        //   style: TextStyle(
+                        //       color: Colors.white, fontSize: width * 0.035),
+                        // ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            "${timeago.format(DateTime.parse(jobModel.createdAt!), locale: 'ar')}",
+                            style: TextStyle(
+                                color: Colors.white, fontSize: width * 0.035),
                           ),
                         ),
-                        backgroundColor: Colors.white,
-                        radius: width * 0.06,
-                      ),
-                      Text(
-                        '${companyName}',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: width * 0.05),
-                      ),
-                      // Text(
-                      //   'uoioiuiouio',
-                      //   style: TextStyle(
-                      //       color: Colors.white, fontSize: width * 0.035),
-                      // ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          "${timeago.format(DateTime.parse(jobModel.createdAt!), locale: 'ar')}",
-                          style: TextStyle(
-                              color: Colors.white, fontSize: width * 0.035),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 )),
             Padding(
@@ -106,17 +113,17 @@ class JobScreen extends StatelessWidget {
                     height: 15,
                   ),
                   TitleWidget(text: "الخبرة المطلوبة"),
-                  JobInfoWidget(info: jobModel.experience??['غير محدد']),
+                  JobInfoWidget(info: jobModel.experience ?? ['غير محدد']),
                   SizedBox(
                     height: 15,
                   ),
                   TitleWidget(text: "المهارات"),
-                  JobInfoWidget(info: jobModel.skills??['غير محدد']),
+                  JobInfoWidget(info: jobModel.skills ?? ['غير محدد']),
                   SizedBox(
                     height: 15,
                   ),
                   TitleWidget(text: "الشهادات المطلوبة"),
-                  JobInfoWidget(info: jobModel.certificate??['غير محدد']),
+                  JobInfoWidget(info: jobModel.certificate ?? ['غير محدد']),
                   SizedBox(
                     height: 15,
                   ),
@@ -167,9 +174,23 @@ class JobScreen extends StatelessWidget {
             SizedBox(
               height: 15,
             ),
-            ButtonWidget(onPressed: () {
-              
-            }, child: Text('التقديم على الوظيفة'), color: AppColor.mainColor),
+            ButtonWidget(
+                onPressed: () async {
+                  RequstVM rq = RequstVM();
+                  if (userId != null && userType == "user") {
+                    await rq.handleCVRequest(
+                            userID: userId!, jobID: jobModel.id!)
+                        ? ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(rq.requestMessege)))
+                        : ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text('حدث خطأ')));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('يجب التسجيل بحساب باحث عن وظيفة')));
+                  }
+                },
+                child: Text('التقديم على الوظيفة'),
+                color: AppColor.mainColor),
             SizedBox(
               height: 10,
             ),

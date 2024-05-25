@@ -62,7 +62,7 @@ class JobWidget extends StatelessWidget {
                             radius: width * 0.05,
                           ),
                           title: Text(
-                            companyName,
+                            "${companyName}",
                             style: TextStyle(
                                 fontSize: width * 0.035, color: Colors.grey),
                           ),

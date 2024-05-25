@@ -1,15 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:job_finder/constants/cons_API.dart';
-import 'package:job_finder/constants/cons_user_data.dart';
 import 'package:job_finder/core/model/user_model.dart';
 
 class UserVM {
   late User user;
-  Future<User> getUserData() async {
+  Future<User> getUserData(String userID) async {
     Dio dio = Dio();
-    print(userId);
+    print(userID);
     Response response =
-        await dio.get(APIRoute.getUserData(userId));
+        await dio.get(APIRoute.getUserData(userID));
     user = User.fromJson(response.data!);
     return user;
   }

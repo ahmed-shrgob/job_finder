@@ -4,7 +4,8 @@ import 'package:job_finder/core/view%20model/userVM.dart';
 import 'package:job_finder/core/view/widgets/title_widget.dart';
 
 class AboutUsWidget extends StatelessWidget {
-  AboutUsWidget({super.key});
+  final String userID;
+  AboutUsWidget({super.key, required this.userID});
   final UserVM userVM = UserVM();
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class AboutUsWidget extends StatelessWidget {
       child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: FutureBuilder(
-            future: userVM.getUserData(),
+            future: userVM.getUserData(userID),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData) {
@@ -34,8 +35,8 @@ class AboutUsWidget extends StatelessWidget {
                     ),
                     TitleWidget(text: 'المكان'),
                     Text(
-                      "snapshot.data!.location",
-                    //  '${snapshot.data!.location}',
+                      // "snapshot.data!.location",
+                     '${snapshot.data!.location}',
                       style: TextStyle(
                         fontSize: width * 0.035,
                         color: Color(0xff8B8B8B),

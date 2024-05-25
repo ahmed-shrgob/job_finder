@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:job_finder/constants/cons_colors.dart';
 
 class ButtonWidget extends StatelessWidget {
   final Function()? onPressed;
@@ -27,5 +28,42 @@ class ButtonWidget extends StatelessWidget {
             child: child),
       ),
     );
+  }
+}
+
+
+
+class JobsRequstsButton extends StatelessWidget {
+  final String text;
+  final Function() onPressed;
+
+  const JobsRequstsButton(
+      {required this.text, required this.onPressed, Key? key})
+      : super(key: key);
+
+  final double borderRadius = 25;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(borderRadius),
+            gradient: AppColor.gradient),
+        child: ElevatedButton(
+            style: ButtonStyle(
+                elevation: MaterialStateProperty.all(0),
+                alignment: Alignment.center,
+                padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
+                    horizontal: 25,vertical: 10)),
+                backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(borderRadius)),
+                )),
+            onPressed: onPressed,
+            child: Text(
+              text,
+              style: const TextStyle(color: Colors.white,fontSize: 23,fontWeight: FontWeight.bold),
+            )));
   }
 }

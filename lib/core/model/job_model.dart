@@ -47,7 +47,7 @@ class Job {
   Map<String, dynamic> toJson() {
     return {
       // "_id": id,
-      "IDUser":IDUser,
+      "IDUser":IDUser??null,
       "name": name,
       "location": location,
       "bio": bio,

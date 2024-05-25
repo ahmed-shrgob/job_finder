@@ -1,59 +1,96 @@
 // import 'package:flutter/material.dart';
-// import 'package:job_finder/constants/cons_colors.dart';
-// import 'package:job_finder/constants/cons_size.dart';
-// import 'package:job_finder/core/view/widgets/filter_wdget.dart';
 
-// class FilterScreen extends StatelessWidget {
-//   const FilterScreen({super.key});
+// class FilterScreen1 extends StatefulWidget {
+//   @override
+//   _FilterScreenState createState() => _FilterScreenState();
+// }
+
+// class _FilterScreenState extends State<FilterScreen1> {
+//   Map<String, bool> category1 = {
+//     'Option 1': false,
+//     'Option 2': false,
+//     'Option 3': false,
+//   };
+
+//   Map<String, bool> category2 = {
+//     'Option 1': false,
+//     'Option 2': false,
+//     'Option 3': false,
+//   };
+
+//   Map<String, bool> category3 = {
+//     'Option 1': false,
+//     'Option 2': false,
+//     'Option 3': false,
+//   };
+
+//   Map<String, bool> category4 = {
+//     'Option 1': false,
+//     'Option 2': false,
+//     'Option 3': false,
+//   };
 
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: Text('فلتر'),
-//         centerTitle: true,
-//         elevation: 0,
-//         backgroundColor: AppColor.appBarColor,
+//         title: Text('Filter Items'),
 //       ),
-//       body: Column(
-//         children: [
-//           Expanded(
-//             child: FilterWidget(
-//               info: [
-//                 {"title": "تاريخ الإعلان", "subtitle": "أي وقت >"},
-//                 {"title": "المدينة", "subtitle": "2 محدد >"},
-//                 {"title": "مجال العمل", "subtitle": "أي وقت >"},
-//                 {"title": "الجنس", "subtitle": "أي وقت >"},
-//                 {"title": "نوع الدوام", "subtitle": "1 محدد >"},
-//                 {"title": "مستوى الشهادة", "subtitle": "1 محدد >"},
-//               ],
-//             ),
-//           ),
-//           Container(
-//             padding: EdgeInsets.symmetric(vertical: width*0.05,horizontal: width*0.1),
-//             height: width * 0.2,
-//             width: double.infinity,
-//             color: Colors.white,
-//             child: ElevatedButton(
+//       body: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: ListView(
+//           children: [
+//             Card(child: buildExpansionTile('Category 1', category1)),
+//             buildExpansionTile('Category 2', category2),
+//             buildExpansionTile('Category 3', category3),
+//             buildExpansionTile('Category 4', category4),
+//             SizedBox(height: 20),
+//             ElevatedButton(
+//               onPressed: () {
+//                 // Implement filter logic
+//               },
+//               child: Text('Apply Filter'),
 //               style: ElevatedButton.styleFrom(
-//                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-//                   backgroundColor: AppColor.primaryColor),
-//               onPressed: () {},
-//               child: Text('234 وضيفة متاحة',style: TextStyle(fontWeight: FontWeight.bold),),
+//                 primary: Colors.blue,
+//                 textStyle: TextStyle(fontSize: 18),
+//                 padding: EdgeInsets.symmetric(vertical: 12),
+//               ),
 //             ),
-//           )
-//         ],
+//           ],
+//         ),
 //       ),
 //     );
 //   }
-// }
 
+//   ExpansionTile buildExpansionTile(String title, Map<String, bool> options) {
+//     return ExpansionTile(
+//       title: Text(
+//         title,
+//         style: TextStyle(
+//           fontSize: 18,
+//           fontWeight: FontWeight.bold,
+//         ),
+//       ),
+//       children: options.keys.map((String key) {
+//         return CheckboxListTile(
+//           title: Text(key),
+//           value: options[key],
+//           onChanged: (bool? value) {
+//             setState(() {
+//               options[key] = value!;
+//             });
+//           },
+//         );
+//       }).toList(),
+//     );
+//   }
+// }
 import 'package:flutter/material.dart';
 import 'package:job_finder/constants/cons_colors.dart';
 import 'package:job_finder/core/view%20model/filterVM.dart';
 import 'package:provider/provider.dart';
 
-class FilterScreen extends StatelessWidget {
+class FilterScreen1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filterModel = Provider.of<FilterVM>(context);
@@ -68,13 +105,9 @@ class FilterScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            buildExpansionTile(
-                context,
-                "تاريخ الإعلان",
-                filterModel.selectedCategory1 ?? '',
+            buildExpansionTile(context, "تاريخ الإعلان", filterModel.selectedCategory1??'',
                 ['Option 1', 'Option 2', 'Option 3']),
-            buildExpansionTile(
-                context, "المدينة", filterModel.selectedCategory2 ?? '', [
+            buildExpansionTile(context, "المدينة",filterModel.selectedCategory2??'', [
               'عدن',
               'صنعاء',
               'حضرموت',
@@ -97,15 +130,9 @@ class FilterScreen extends StatelessWidget {
               'ذمار'
             ]),
             buildExpansionTile(
-                context,
-                "مجال العمل",
-                filterModel.selectedCategory3 ?? '',
-                ['Option 1', 'Option 2', 'Option 3']),
+                context, "مجال العمل",filterModel.selectedCategory3??'', ['Option 1', 'Option 2', 'Option 3']),
             buildExpansionTile(
-                context,
-                "نوع الدوام",
-                filterModel.selectedCategory4 ?? '',
-                ['Option 1', 'Option 2', 'Option 3']),
+                context, "نوع الدوام",filterModel.selectedCategory4??'' ,['Option 1', 'Option 2', 'Option 3']),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -120,8 +147,6 @@ class FilterScreen extends StatelessWidget {
               },
               child: Text('تفعيل الفلترة'),
               style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
                 backgroundColor: AppColor.primaryColor,
                 textStyle: TextStyle(fontSize: 18),
                 padding: EdgeInsets.symmetric(vertical: 12),
