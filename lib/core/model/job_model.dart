@@ -7,6 +7,7 @@ class Job {
   String? bio;
   String? workSchedule;
   String? type;
+  String? categorey;
   String? salary;
   // String? education;
   String? createdAt;
@@ -21,6 +22,7 @@ class Job {
       required this.bio,
       required this.workSchedule,
       required this.type,
+      required this.categorey,
       required this.salary,
       // this.education,
       this.createdAt,
@@ -36,6 +38,7 @@ class Job {
     bio = json["bio"];
     workSchedule = json["workSchedule"];
     type = json["type"];
+    categorey = json["Categorey"];
     salary = json["salary"];
     // education = json["education"];
     createdAt = json["createdAt"];
@@ -53,6 +56,7 @@ class Job {
       "bio": bio,
       "workSchedule": workSchedule,
       "type": type,
+      "Categorey": categorey,
       "salary": salary,
       // "education": education,
       // "createdAt": createdAt,

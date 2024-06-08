@@ -10,15 +10,27 @@ import 'package:job_finder/core/view/widgets/title_widget.dart';
 import 'package:job_finder/helper/job_dropdown_providr.dart';
 import 'package:provider/provider.dart';
 
-class CreateJobScreen extends StatelessWidget {
+class CreateJobScreen extends StatefulWidget {
   CreateJobScreen({super.key});
-  final createJobKey = GlobalKey<FormState>();
+ static final createJobKey = GlobalKey<FormState>();
+
+  @override
+  State<CreateJobScreen> createState() => _CreateJobScreenState();
+}
+
+class _CreateJobScreenState extends State<CreateJobScreen> {
   final _nameController = TextEditingController();
+
   final _bioController = TextEditingController();
+
   final _salaryController = TextEditingController();
+
   final _experienceController = TextEditingController();
+
   final _skillsController = TextEditingController();
+
   final _certificateController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final jobVM = Provider.of<JobVM>(context);
@@ -32,7 +44,7 @@ class CreateJobScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: Form(
-        key: createJobKey,
+        key: CreateJobScreen.createJobKey,
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: SingleChildScrollView(
@@ -82,6 +94,27 @@ class CreateJobScreen extends StatelessWidget {
                       .toList(),
                   onChanged: (newValue) {
                     dropdownProvidor.cityValue = newValue!;
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'مجال الوظيفة',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                DropdownButton(
+                  borderRadius: BorderRadius.circular(10),
+                  value: dropdownProvidor.categoreyValue,
+                  items: dropdownProvidor.categories
+                      .map<DropdownMenuItem<String>>(
+                          (value) => DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              ))
+                      .toList(),
+                  onChanged: (newValue) {
+                    dropdownProvidor.categoreyValue = newValue!;
                   },
                 ),
                 SizedBox(
@@ -207,8 +240,12 @@ class CreateJobScreen extends StatelessWidget {
                     isEdit: false),
                 ButtonWidget(
                     onPressed: () async {
-                      if (createJobKey.currentState!.validate()) {
-                        final jobModel= Job(
+                      if (dropdownProvidor.categoreyValue == "غير محدد") {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                'يجب تحديد مجال العمل وعدم تركه غير محدد')));
+                      } else if (CreateJobScreen.createJobKey.currentState!.validate()) {
+                        final jobModel = Job(
                             IDUser: userId,
                             name: _nameController.text,
                             location: dropdownProvidor.cityValue,
@@ -218,12 +255,13 @@ class CreateJobScreen extends StatelessWidget {
                             salary: _salaryController.text,
                             experience: jobVM.experience,
                             skills: jobVM.skills,
-                            certificate: jobVM.certificate);
+                            certificate: jobVM.certificate,
+                            categorey: dropdownProvidor.categoreyValue);
                         if (await jobVM.createJob(jobModel)) {
                           jobVM.skills.clear();
                           jobVM.certificate.clear();
                           jobVM.experience.clear();
-                          Navigator.pop(context,true);
+                          Navigator.pop(context, true);
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content:

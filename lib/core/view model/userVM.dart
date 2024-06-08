@@ -1,29 +1,37 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:job_finder/constants/cons_API.dart';
 import 'package:job_finder/core/model/user_model.dart';
 
-class UserVM {
+class UserVM extends ChangeNotifier {
   late User user;
+  late List<User> topFollowedCompanies ; 
+  
+  Dio dio = Dio();
+
   Future<User> getUserData(String userID) async {
-    Dio dio = Dio();
-    print(userID);
-    Response response =
-        await dio.get(APIRoute.getUserData(userID));
-    user = User.fromJson(response.data!);
-    return user;
+    try {
+      print("Fetching data for user ID: $userID");
+      Response response = await dio.get(APIRoute.getUserData(userID));
+      print("Response data: ${response.data}");
+      user = User.fromJson(response.data!);
+      return user;
+    } on DioException catch (e) {
+      print("Error fetching user data: $e");
+      rethrow;
+    }
   }
 
-  //  String? userType;
-  // Future<String?> checkType() async {
-  //   Dio dio = Dio();
-  //   try {
-  //     Response<Map<String, dynamic>> response =
-  //         await dio.get(APIRoute.checkType);
-  //         userType=response.data!["type"];
-  //     return userType;
-  //   } on DioException catch (e) {
-  //     print(e);
-  //     return 'لم يتم تسجيل الدخول بعد!';
-  //   }
-  // }
+  Future<List<User>> getTopFollowedCompanies() async {
+    try {
+      Response response = await dio.get(APIRoute.getTopFollowedCompanies);
+      topFollowedCompanies = (response.data as List)
+          .map((value) => User.fromJson(value as Map<String, dynamic>))
+          .toList();
+      return topFollowedCompanies;
+    } on DioException catch (e) {
+      print("Error top followed : $e");
+      return topFollowedCompanies;
+    }
+  }
 }

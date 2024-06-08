@@ -8,16 +8,26 @@ import 'package:job_finder/core/view/widgets/button.dart';
 import 'package:job_finder/core/view/widgets/text_form_widget.dart';
 
 // ignore: must_be_immutable
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+ static final _formKey = GlobalKey<FormState>();
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController();
+
+  final _passwordController = TextEditingController();
+
   AuthVM auth = AuthVM();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+         
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SingleChildScrollView(
@@ -41,7 +51,7 @@ class LoginScreen extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Form(
-                    key: _formKey,
+                    key: LoginScreen._formKey,
                     child: Column(
                       children: [
                         TextFormWidget(
@@ -68,6 +78,7 @@ class LoginScreen extends StatelessWidget {
                           },
                           keyboardType: null,
                         ),
+                      
                         Container(
                           width: double.infinity,
                           alignment: Alignment.topLeft,
@@ -82,7 +93,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                         ButtonWidget(
                           onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
+                            if (LoginScreen._formKey.currentState!.validate()) {
                               if (await auth.login(_emailController.text,
                                   _passwordController.text)) {
                                 Navigator.pushReplacement(

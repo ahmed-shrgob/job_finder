@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:job_finder/constants/cons_API.dart';
@@ -14,21 +12,6 @@ class JobVM extends ChangeNotifier {
   List experience = [];
   List skills = [];
   List certificate = [];
-  // List get experience => _experience;
-  // List get skills => _skills;
-  // List get certificate => _certificate;
-  // set experience(List value) {
-  //   _experience = value;
-  //   notifyListeners();
-  // }
-  // set skills(List value) {
-  //   _skills = value;
-  //   notifyListeners();
-  // }
-  // set certificate(List value) {
-  //   _certificate = value;
-  //   notifyListeners();
-  // }
   updet() {
     notifyListeners();
   }
@@ -48,9 +31,9 @@ class JobVM extends ChangeNotifier {
   Future<List> getLatestJobs() async {
     try {
       Response response = await dio.get(APIRoute.getLatestJobs);
-      print(response.data);
+      // print(response.data);
       latestJobs = response.data['jobs']!.map((value) => Job.fromJson(value)).toList();
-      print(latestJobs);
+      // print(latestJobs);
       return latestJobs;
     } catch (e) {
       print('the err $e');

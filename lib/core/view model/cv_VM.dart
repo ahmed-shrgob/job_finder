@@ -25,9 +25,6 @@ class CVVM extends ChangeNotifier {
     print(CVModel.fromJson(res.data["cvs"][0]));
     cv = CVModel.fromJson(res.data["cvs"][0]);
     print(cv);
-    skills=cv.skills!;
-    certificate=cv.certificate!;
-    experience=cv.experience!;
     return cv;
   }
 

@@ -51,30 +51,34 @@
 import 'package:flutter/material.dart';
 import 'package:job_finder/constants/cons_colors.dart';
 import 'package:job_finder/core/view%20model/filterVM.dart';
+import 'package:job_finder/core/view/screens/filter_result_screen.dart';
 import 'package:provider/provider.dart';
 
 class FilterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final filterModel = Provider.of<FilterVM>(context);
+    final filterModel = Provider.of<FilterVM>(context,listen: true);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.primaryColor,
         elevation: 0,
         centerTitle: true,
         title: Text('فلتر'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            filterModel.mekeValuesNull();
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            buildExpansionTile(
-                context,
-                "تاريخ الإعلان",
-                filterModel.selectedCategory1 ?? '',
-                ['Option 1', 'Option 2', 'Option 3']),
-            buildExpansionTile(
-                context, "المدينة", filterModel.selectedCategory2 ?? '', [
+            buildExpansionTile(context, "تاريخ الإعلان",
+                filterModel.createdAt ?? '', ['اليوم', 'منذ اسبوع', 'شهر']),
+            buildExpansionTile(context, "المدينة", filterModel.location ?? '', [
               'عدن',
               'صنعاء',
               'حضرموت',
@@ -97,26 +101,42 @@ class FilterScreen extends StatelessWidget {
               'ذمار'
             ]),
             buildExpansionTile(
-                context,
-                "مجال العمل",
-                filterModel.selectedCategory3 ?? '',
-                ['Option 1', 'Option 2', 'Option 3']),
-            buildExpansionTile(
-                context,
-                "نوع الدوام",
-                filterModel.selectedCategory4 ?? '',
-                ['Option 1', 'Option 2', 'Option 3']),
+                context, "مجال العمل", filterModel.categorey ?? '', [
+              "التكنولوجيا والمعلومات",
+              "الرعاية الصحية",
+              "الهندسة",
+              "التعليم",
+              "التمويل والمحاسبة",
+              "التسويق والإعلان",
+              "القانون",
+              "الإدارة والأعمال",
+              "الفنون والإعلام",
+              "الصناعة والتصنيع",
+              "الضيافة والسياحة",
+              "العلوم والأبحاث",
+              "البناء والعقارات",
+              "الزراعة والبيئة",
+              "الخدمات الاجتماعية",
+              "التجارة والتجزئة"
+            ]),
+            buildExpansionTile(context, "نوع الدوام",
+                filterModel.workSchedule ?? '', ['دوام جزئي', 'دوام كامل']),
+            buildExpansionTile(context, "نوع الوظيفة",
+                filterModel.jobType ?? '', ['حضوري', 'عن بعد']),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Implement filter logic
-                // You can access the selected options using the Provider
-
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FilterResultScreen(),
+                    ));
                 print('Selected options:');
-                print('Category 1: ${filterModel.selectedCategory1}');
-                print('Category 2: ${filterModel.selectedCategory2}');
-                print('Category 3: ${filterModel.selectedCategory3}');
-                print('Category 4: ${filterModel.selectedCategory4}');
+                print('Category 1: ${filterModel.createdAt}');
+                print('Category 2: ${filterModel.location}');
+                print('Category 3: ${filterModel.categorey}');
+                print('Category 4: ${filterModel.workSchedule}');
+                print('Category 4: ${filterModel.jobType}');
               },
               child: Text('تفعيل الفلترة'),
               style: ElevatedButton.styleFrom(
@@ -166,13 +186,15 @@ class FilterScreen extends StatelessWidget {
   String? getSelectedOption(FilterVM filterModel, String category) {
     switch (category) {
       case "تاريخ الإعلان":
-        return filterModel.selectedCategory1;
+        return filterModel.createdAt;
       case "المدينة":
-        return filterModel.selectedCategory2;
+        return filterModel.location;
       case "مجال العمل":
-        return filterModel.selectedCategory3;
+        return filterModel.categorey;
       case "نوع الدوام":
-        return filterModel.selectedCategory4;
+        return filterModel.workSchedule;
+      case "نوع الوظيفة":
+        return filterModel.jobType;
       default:
         return null;
     }

@@ -87,12 +87,12 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
                                               snapshot.connectionState ==
                                                   ConnectionState.done) {
                                             return FollowWidget(
-                                              isFollow: snapshot.data!,
-                                              onTap: () {
+                                              isFollow: value.isFollow,
+                                              onTap: ()async {
                                                 snapshot.data!
-                                                    ? value.unFollow(
+                                                    ?await value.unFollow(
                                                         userId!, widget.id)
-                                                    : value.follow(
+                                                    :await value.follow(
                                                         userId!, widget.id);
                                                 value.update();
                                               },
@@ -200,7 +200,7 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
                     },
                   );
                 }),
-                PostWidget(),
+                // PostWidget(),
                 AboutUsWidget(
                   userID: widget.id,
                 ),

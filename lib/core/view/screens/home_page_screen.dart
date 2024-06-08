@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:job_finder/constants/cons_colors.dart';
 import 'package:job_finder/constants/cons_user_data.dart';
 import 'package:job_finder/core/view%20model/jobVM.dart';
+import 'package:job_finder/core/view%20model/userVM.dart';
 import 'package:job_finder/core/view/screens/company_profile_screen.dart';
 import 'package:job_finder/core/view/screens/company_requests_screen.dart';
 import 'package:job_finder/core/view/screens/cv_profile_screen.dart';
@@ -16,8 +17,12 @@ import '../widgets/jobs_widget.dart';
 
 class HomePageScreen extends StatelessWidget {
   HomePageScreen({super.key});
+  UserVM userVM=UserVM();
   @override
   Widget build(BuildContext context) {
+    
+    print(userVM.getTopFollowedCompanies);
+    // print('ffffffffffffffffffffffffffffffffffffffff ${userVM.topFollowedCompanies}');
     print(width * 0.07);
     return SafeArea(
       child: Scaffold(
@@ -177,16 +182,19 @@ class HomePageScreen extends StatelessWidget {
               ),
               Container(
                 height: width * 0.3,
-                child: ListView.builder(
+                child:
+                Consumer<UserVM>(builder: (context, value, child) => FutureBuilder(future: value.getTopFollowedCompanies(), builder: (context, snapshot) {
+                  if (snapshot.connectionState==ConnectionState.done&&snapshot.hasData) {
+                    return  ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 7,
+                  itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                CompanyProfilScreen(id: userId!),
+                                CompanyProfilScreen(id: snapshot.data![index].id!),
                           )),
                       child: Padding(
                         padding:
@@ -217,13 +225,13 @@ class HomePageScreen extends StatelessWidget {
                                 radius: width * 0.05,
                               ),
                               Text(
-                                'جوجل',
+                                '${snapshot.data![index].name}',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: width * 0.04),
                               ),
                               Text(
-                                '50k followers',
+                                ' ${snapshot.data![index].followersCount} متابعين',
                                 style: TextStyle(
                                     fontSize: width * 0.03, color: Colors.grey),
                               ),
@@ -233,7 +241,12 @@ class HomePageScreen extends StatelessWidget {
                       ),
                     );
                   },
-                ),
+                );
+                  } else {
+                    return Center(child: CircularProgressIndicator(color: AppColor.mainColor,));
+                  }
+                },),)
+                
               ),
               Padding(
                 padding:

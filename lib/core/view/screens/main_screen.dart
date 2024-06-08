@@ -2,7 +2,7 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:job_finder/constants/cons_colors.dart';
 import 'package:job_finder/core/view/screens/cimmunity_screen.dart';
-import 'package:job_finder/core/view/screens/filter_screen.dart';
+import 'package:job_finder/core/view/screens/conversations_screen.dart';
 import 'package:job_finder/core/view/screens/home_page_screen.dart';
 import 'package:job_finder/core/view/screens/more_screen.dart';
 import 'package:job_finder/core/view/screens/saved_jobs_Screen.dart';
@@ -19,7 +19,7 @@ class _MainScreenState extends State<MainScreen> {
 
   List<Widget> pages = [
     HomePageScreen(),
-    FilterScreen(),
+    ConversationsScreen(),
     CommunityScreen(),
     SavedJobScreen(),
     MoreScreen(),

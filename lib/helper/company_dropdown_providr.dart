@@ -31,18 +31,44 @@ class CompanyDropdownValueProvider extends ChangeNotifier {
     '150 - 250',
     'اكثر من 250'
   ];
+  List<String> categories = [
+    "غير محدد",
+    "التكنولوجيا والمعلومات",
+    "الرعاية الصحية",
+    "الهندسة",
+    "التعليم",
+    "التمويل والمحاسبة",
+    "التسويق والإعلان",
+    "القانون",
+    "الإدارة والأعمال",
+    "الفنون والإعلام",
+    "الصناعة والتصنيع",
+    "الضيافة والسياحة",
+    "العلوم والأبحاث",
+    "البناء والعقارات",
+    "الزراعة والبيئة",
+    "الخدمات الاجتماعية",
+    "التجارة والتجزئة"
+  ];
   String _cityValue = 'عدن';
   String _employeeCountValue = 'اقل من 20';
+  String _categorey = "غير محدد";
 
   String get cityValue => _cityValue;
   String get employeeCountValue => _employeeCountValue;
+  String get categoreyValue => _categorey;
 
   set cityValue(String value) {
     _cityValue = value;
     notifyListeners();
   }
+
   set employeeCountValue(String value) {
     _employeeCountValue = value;
+    notifyListeners();
+  }
+  set categoreyValue(String value) {
+    _categorey = value;
     notifyListeners();
   }
 }

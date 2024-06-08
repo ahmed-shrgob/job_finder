@@ -11,7 +11,7 @@ import 'package:job_finder/core/view/widgets/title_widget.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class CVCreateEditScreen extends StatelessWidget {
+class CVCreateEditScreen extends StatefulWidget {
   bool isEdit;
   String? cvId;
   String? fullName;
@@ -32,22 +32,34 @@ class CVCreateEditScreen extends StatelessWidget {
       required this.experience,
       required this.skills});
 
-  final _CVglobalKey = GlobalKey<FormState>();
-  TextEditingController fullNameController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController skillsController = TextEditingController();
-  TextEditingController certificateController = TextEditingController();
-  TextEditingController experienceController = TextEditingController();
-  // CVVM cvVM = CVVM();
+ static final _CVglobalKey = GlobalKey<FormState>();
+TextEditingController fullNameController = TextEditingController();
 
+  TextEditingController addressController = TextEditingController();
+
+  TextEditingController emailController = TextEditingController();
+
+  TextEditingController phoneController = TextEditingController();
+
+  TextEditingController skillsController = TextEditingController();
+
+  TextEditingController certificateController = TextEditingController();
+
+  TextEditingController experienceController = TextEditingController();
+
+  @override
+  State<CVCreateEditScreen> createState() => _CVCreateEditScreenState();
+}
+
+class _CVCreateEditScreenState extends State<CVCreateEditScreen> {
+  
+  // CVVM cvVM = CVVM();
   @override
   Widget build(BuildContext context) {
     final cvVM = Provider.of<CVVM>(context);
     return Scaffold(
       appBar: AppBar(
-        title: isEdit ? Text("تعديل CV") : Text("انشاء CV"),
+        title: widget.isEdit ? Text("تعديل CV") : Text("انشاء CV"),
         centerTitle: true,
         elevation: 0,
         backgroundColor: AppColor.appBarColor,
@@ -55,7 +67,7 @@ class CVCreateEditScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Form(
-            key: _CVglobalKey,
+            key: CVCreateEditScreen._CVglobalKey,
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -71,10 +83,10 @@ class CVCreateEditScreen extends StatelessWidget {
                       }
                       return null;
                     },
-                    controller: isEdit
-                        ? fullNameController =
-                            TextEditingController(text: fullName)
-                        : fullNameController,
+                    controller: widget.isEdit
+                        ?widget. fullNameController =
+                            TextEditingController(text: widget.fullName)
+                        : widget. fullNameController,
                   ),
                   TextFormWidget(
                     hintText: "ادخل عنوانك",
@@ -85,10 +97,10 @@ class CVCreateEditScreen extends StatelessWidget {
                       }
                       return null;
                     },
-                    controller: isEdit
-                        ? addressController =
-                            TextEditingController(text: address)
-                        : addressController,
+                    controller: widget.isEdit
+                        ? widget. addressController =
+                            TextEditingController(text: widget.address)
+                        :widget.  addressController,
                   ),
                   TextFormWidget(
                     hintText: "ادخل ايميلك الرسمي ",
@@ -102,9 +114,9 @@ class CVCreateEditScreen extends StatelessWidget {
                       }
                       return null;
                     },
-                    controller: isEdit
-                        ? emailController = TextEditingController(text: email)
-                        : emailController,
+                    controller: widget.isEdit
+                        ? widget. emailController = TextEditingController(text: widget.email)
+                        : widget. emailController,
                     keyboardType: TextInputType.emailAddress,
                   ),
                   TextFormWidget(
@@ -116,9 +128,9 @@ class CVCreateEditScreen extends StatelessWidget {
                       }
                       return null;
                     },
-                    controller: isEdit
-                        ? phoneController = TextEditingController(text: phone)
-                        : phoneController,
+                    controller: widget.isEdit
+                        ? widget. phoneController = TextEditingController(text: widget.phone)
+                        :widget.  phoneController,
                     keyboardType: TextInputType.phone,
                   ),
                   Padding(
@@ -143,19 +155,23 @@ class CVCreateEditScreen extends StatelessWidget {
                             }
                             return null;
                           },
-                          controller: certificateController,
+                          controller: widget. certificateController,
                         ),
                       ],
                     ),
                     onPressed: () {
-                      if (certificateController.text.isNotEmpty) {
-                        cvVM.certificate.add(certificateController.text);
-                        certificateController.clear();
+                      if (widget. certificateController.text.isNotEmpty) {
+                        cvVM.certificate.add(widget. certificateController.text);
+                        widget. certificateController.clear();
+                        widget.phone=widget.phoneController.text;
+                        widget.fullName=widget.fullNameController.text;
+                        widget.email=widget.emailController.text;
+                        widget.address=widget.addressController.text;
                         cvVM.update();
                         Navigator.pop(context);
                       }
                     },
-                    isEdit: isEdit,
+                    isEdit: widget.isEdit,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -179,19 +195,23 @@ class CVCreateEditScreen extends StatelessWidget {
                             }
                             return null;
                           },
-                          controller: skillsController,
+                          controller: widget. skillsController,
                         ),
                       ],
                     ),
                     onPressed: () {
-                      if (skillsController.text.isNotEmpty) {
-                        cvVM.skills.add(skillsController.text);
+                      if (widget. skillsController.text.isNotEmpty) {
+                        cvVM.skills.add(widget. skillsController.text);
+                        widget.phone=widget.phoneController.text;
+                        widget.fullName=widget.fullNameController.text;
+                        widget.email=widget.emailController.text;
+                        widget.address=widget.addressController.text;
                         cvVM.update();
-                        skillsController.clear();
+                        widget. skillsController.clear();
                         Navigator.pop(context);
                       }
                     },
-                    isEdit: isEdit,
+                    isEdit: widget.isEdit,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -215,43 +235,47 @@ class CVCreateEditScreen extends StatelessWidget {
                             }
                             return null;
                           },
-                          controller: experienceController,
+                          controller:widget.  experienceController,
                         ),
                       ],
                     ),
                     onPressed: () {
-                      if (experienceController.text.isNotEmpty) {
-                        cvVM.experience.add(experienceController.text);
-                        experienceController.clear();
+                      if (widget. experienceController.text.isNotEmpty) {
+                        cvVM.experience.add(widget. experienceController.text);
+                        widget. experienceController.clear();
+                         widget.phone=widget.phoneController.text;
+                        widget.fullName=widget.fullNameController.text;
+                        widget.email=widget.emailController.text;
+                        widget.address=widget.addressController.text;
                         cvVM.update();
                         Navigator.pop(context);
                       }
                     },
-                    isEdit: isEdit,
+                    isEdit: widget.isEdit,
                   ),
                   ButtonWidget(
                       onPressed: () {
-                        if (_CVglobalKey.currentState!.validate()) {
-                          if (isEdit) {
+                        if (CVCreateEditScreen._CVglobalKey.currentState!.validate()) {
+                          if (widget.isEdit) {
                             cvVM.editCV(
                                 CVModel(
                                     userID: userId,
-                                    fullName: fullNameController.text,
-                                    address: addressController.text,
-                                    phone: phoneController.text,
-                                    email: emailController.text,
+                                    fullName: widget. fullNameController.text,
+                                    address: widget. addressController.text,
+                                    phone:widget.  phoneController.text,
+                                    email: widget. emailController.text,
                                     skills: cvVM.skills,
                                     certificate: cvVM.certificate,
                                     experience: cvVM.experience),
-                                cvId);
+                                widget.cvId);
                             Navigator.pop(context, true);
                           } else {
                             cvVM.createCV(CVModel(
                                 userID: userId,
-                                fullName: fullNameController.text,
-                                address: addressController.text,
-                                phone: phoneController.text,
-                                email: emailController.text,
+                                fullName: widget. fullNameController.text,
+                                address: widget. addressController.text,
+                                phone: widget. phoneController.text,
+                                email:widget.  emailController.text,
                                 skills: cvVM.skills,
                                 certificate: cvVM.certificate,
                                 experience: cvVM.experience));
@@ -259,7 +283,7 @@ class CVCreateEditScreen extends StatelessWidget {
                           }
                         }
                       },
-                      child: isEdit
+                      child: widget.isEdit
                           ? Text('تعديل السيرة الذاتية')
                           : Text('إنشاء السيرة الذاتية'),
                       color: AppColor.mainColor)

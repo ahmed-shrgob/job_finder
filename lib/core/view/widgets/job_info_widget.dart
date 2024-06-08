@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:job_finder/constants/cons_size.dart';
+
 class JobInfoWidget extends StatelessWidget {
   final List info;
-  JobInfoWidget({super.key, required this.info,});
+  JobInfoWidget({
+    super.key,
+    required this.info,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,24 +27,32 @@ class JobInfoWidget extends StatelessWidget {
         ),
         child: Column(
           children: [
-            ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: info.length,
-                itemBuilder: (context, index) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "\u2022  ${info[index]}",
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
-                            fontSize: width * 0.037),
-                      ),
-                    ],
-                  );
-                }),
+            info.length != 0
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: info.length,
+                    itemBuilder: (context, index) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "\u2022  ${info[index]}",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: width * 0.037),
+                          ),
+                        ],
+                      );
+                    })
+                : Text(
+                    "غير محدد",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                        fontSize: width * 0.037),
+                  ),
           ],
         ));
   }

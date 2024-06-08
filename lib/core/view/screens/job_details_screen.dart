@@ -147,6 +147,10 @@ class JobScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ListTile(
+                            title: Text("مجال الوظيفة"),
+                            subtitle: Text('${jobModel.categorey}'),
+                          ),
+                          ListTile(
                             title: Text('منطقة الوظيفة	'),
                             subtitle: Text('${jobModel.location}'),
                           ),

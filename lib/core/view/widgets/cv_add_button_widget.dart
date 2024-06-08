@@ -32,7 +32,7 @@ class CVAddButtonWidget extends StatelessWidget {
                         onPressed: onPressed,
                         child: Container(
                           height: 20,
-                          width: 60,
+                          // width: 60,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [Icon(Icons.add), Text('إضافة')],
@@ -47,7 +47,7 @@ class CVAddButtonWidget extends StatelessWidget {
           },
           child: Container(
             height: 20,
-            width: 60,
+            // width: 60,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [Icon(Icons.add), Text('إضافة')],

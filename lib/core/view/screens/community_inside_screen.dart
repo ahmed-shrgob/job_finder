@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:job_finder/constants/cons_colors.dart';
+import 'package:job_finder/constants/cons_user_data.dart';
+import 'package:job_finder/core/view%20model/blogsVm.dart';
+import 'package:job_finder/core/view/screens/community_create_post_screen.dart';
 import 'package:job_finder/core/view/widgets/post_widget.dart';
+import 'package:provider/provider.dart';
 
 class CommunityInsideScreen extends StatelessWidget {
-  const CommunityInsideScreen({super.key});
+  final String communtyName;
+  const CommunityInsideScreen({super.key, required this.communtyName});
 
   @override
   Widget build(BuildContext context) {
+    final blogVM = Provider.of<BlogVm>(context);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('مجتمع البرمجة'),
+          title: Text('مجتمع ${communtyName}'),
           centerTitle: true,
           elevation: 0,
           backgroundColor: AppColor.appBarColor,
@@ -60,12 +66,71 @@ class CommunityInsideScreen extends StatelessWidget {
               ),
             ),
             Expanded(
-                child: TabBarView(children: [
-              PostWidget(),
-              PostWidget(),
-            ]))
+                child: Consumer<BlogVm>(
+              builder: (context, value, child) => TabBarView(children: [
+                FutureBuilder(
+                  future: value.getArticlesByType(
+                      userType: "company", categoeryName: communtyName),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) => PostWidget(
+                          blog: snapshot.data![index],
+                          userName: '${snapshot.data![index].userName}',
+                          userImage: snapshot.data![index].userImage,
+                        ),
+                      );
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: AppColor.mainColor,
+                        ),
+                      );
+                    }
+                  },
+                ),
+                FutureBuilder(
+                  future: value.getArticlesByType(
+                      userType: "user", categoeryName: communtyName),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) => PostWidget(
+                          blog: snapshot.data![index],
+                          userName: '${snapshot.data![index].userName}',
+                          userImage: snapshot.data![index].userImage,
+                        ),
+                      );
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: AppColor.mainColor,
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ]),
+            ))
           ],
         ),
+        floatingActionButton:userId!=null? FloatingActionButton(
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CommunityCreatePostScreen(
+                  categoeryName: communtyName,
+                ),
+              )).then((v) => v == true ? blogVM.update() : null),
+          backgroundColor: AppColor.mainColor,
+          child: Container(
+            child: Icon(Icons.add),
+          ),
+        ):null,
       ),
     );
   }

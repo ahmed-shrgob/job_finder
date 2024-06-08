@@ -11,6 +11,7 @@ class User {
   String? bio;
   String? employeeCount;
   String? companyCreateAt;
+  int? followersCount;
   User(
       {this.id,
       this.email,
@@ -23,20 +24,23 @@ class User {
       this.gender,
       this.bio,
       this.employeeCount,
-      this.companyCreateAt});
+      this.companyCreateAt,
+      this.followersCount,
+      });
   User.fromJson(Map<String, dynamic> Json) {
     id = Json["_id"];
     email = Json["email"];
-    password = Json["password"];
+    // password = Json["password"];
     name = Json["name"];
     type = Json["type"];
     // image = Json["image"];
     location = Json["location"];
     categorey = Json["categorey"];
-    gender = Json["gender"];
+    // gender = Json["gender"];
     bio = Json["bio"];
     employeeCount = Json["employeeCount"];
     companyCreateAt = Json["companyCreateAt"];
+    followersCount = Json["followersCount"];
   }
   Map<String, dynamic> toJson(String userType) {
     return {
