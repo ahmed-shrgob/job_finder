@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:job_finder/constants/cons_size.dart';
+import 'package:job_finder/constants/cons_user_data.dart';
 import 'package:job_finder/core/model/Blogs.dart';
+import 'package:job_finder/core/view%20model/LikeVm.dart';
+import 'package:job_finder/core/view%20model/blogsVm.dart';
+import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostWidget extends StatelessWidget {
@@ -15,6 +19,8 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final likeVm = Provider.of<LikeVm>(context);
+    final blogVm = Provider.of<BlogVm>(context);
     return Padding(
       padding: EdgeInsets.only(
           left: width * 0.05, right: width * 0.05, top: width * 0.03),
@@ -78,13 +84,26 @@ class PostWidget extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Icon(
-                      Icons.favorite_border,
-                      color: Colors.red,
+                    child: IconButton(
+                      onPressed: () {
+                        likeVm.AddLike(userId!, blog.id!);
+                        blog.isliked = !blog.isliked!;
+                        if (blog.isliked!) {
+                      blog.likes=    blog.likes!+1;
+                        } else {
+                       blog.likes=   blog.likes!-1;
+                        }
+                        // blogVm.update();
+                        likeVm.Update();
+                      },
+                      icon: Icon(
+                        blog.isliked! ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
                     ),
                   ),
                   Text(
-                    '13',
+                    '${blog.likes}',
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: width * 0.035,

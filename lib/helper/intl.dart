@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 String convertTimeforMessage(DateTime timestamp) {
   Duration diff = DateTime.now().difference(timestamp);
-return DateFormat('hh:mm a').format(timestamp);
+return DateFormat('hh:mm a').format(timestamp.add(Duration(hours: 2)));
   // if (diff.inSeconds < 60) {
   //   return 'قبل ${diff.inSeconds} ثواني';
   // } else if (diff.inMinutes < 60) {

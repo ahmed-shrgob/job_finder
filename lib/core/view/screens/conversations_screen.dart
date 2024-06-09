@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:job_finder/chat_pro.dart';
 import 'package:job_finder/constants/cons_colors.dart';
 import 'package:job_finder/constants/cons_user_data.dart';
+import 'package:job_finder/core/model/conversation_model.dart';
 import 'package:job_finder/core/view/screens/chat_screen.dart';
 import 'package:job_finder/helper/intl.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,7 @@ import 'package:provider/provider.dart';
 class ConversationsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Provider.of<ChatProvider>(context, listen: false)..initSocket()
+    final chatProvider = Provider.of<ChatProvider>(context, listen: false)
       ..fetchConversations(userId!);
 
     return Scaffold(
@@ -22,12 +23,22 @@ class ConversationsScreen extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: Consumer<ChatProvider>(
-              builder: (context, chatProvider, child) {
+            child: StreamBuilder<List<Conversation>>(
+              stream: chatProvider.conversationStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text("No conversations yet"));
+                }
+
+                final conversations = snapshot.data!;
+
                 return ListView.builder(
-                  itemCount: chatProvider.conversations.length,
+                  itemCount: conversations.length,
                   itemBuilder: (context, index) {
-                    var conversation = chatProvider.conversations[index];
+                    var conversation = conversations[index];
                     final DateTime createdAt = DateTime.parse(conversation.lastMessage!['createdAt']);
                     // final String formattedTime = DateFormat('hh:mm a').format(createdAt);
                     // final int unreadMessages = conversation.unreadMessagesCount;
@@ -49,7 +60,7 @@ class ConversationsScreen extends StatelessWidget {
                         backgroundColor: Colors.blueGrey,
                       ),
                       title: Text("${conversation.lastMessage!["recipientName"]}"),
-                       subtitle: Text(
+                      subtitle: Text(
                         conversation.lastMessage!['text'],
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,

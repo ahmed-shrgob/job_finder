@@ -1,7 +1,7 @@
 // String _root = 'http://192.168.1.8:8000'; //d-link
 // String _root = 'http://192.168.8.163:8000'; //aden-net
 // String _root = 'http://192.168.223.254:8000';
-String _ip = '192.168.0.7';
+String _ip = '192.168.8.14';
 String _root = 'http://$_ip:8000';
 
 class APIRoute {
@@ -52,4 +52,5 @@ class APIRoute {
 static String getUserBlogs(iD) {
     return "$_root/blog/getUserBlogs/$iD";
   }
+  static String like = "$_root/like/likePost";
 }

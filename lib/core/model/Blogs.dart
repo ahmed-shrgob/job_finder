@@ -8,7 +8,8 @@ class BlogsModel {
   String? createdAt;
   String? userImage;
   String? userName;
-  List? likes;
+  int? likes;
+  bool? isliked;
   BlogsModel(
       {this.id,
       this.title,
@@ -16,6 +17,8 @@ class BlogsModel {
       this.type,
       this.Categorey,
       this.author,
+      this.isliked,
+      this.likes,
       this.createdAt,
       this.userImage,
       this.userName});
@@ -29,7 +32,8 @@ class BlogsModel {
     createdAt = josn["createdAt"];
     userImage = josn["userImage"];
     userName = josn["userName"];
-    // likes = josn["likes"];
+    likes = josn["likes"];
+    isliked = josn["isliked"];
   }
   Map<String, dynamic> toJosn() {
     return {

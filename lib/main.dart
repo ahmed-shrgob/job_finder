@@ -4,11 +4,12 @@ import 'package:job_finder/chat_pro.dart';
 import 'package:job_finder/constants/cons_user_data.dart';
 import 'package:job_finder/constants/cons_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:job_finder/core/view%20model/LikeVm.dart';
 import 'package:job_finder/core/view%20model/blogsVm.dart';
-import 'package:job_finder/core/view%20model/chatVM.dart';
 import 'package:job_finder/core/view%20model/filterVM.dart';
 import 'package:job_finder/core/view%20model/followVM.dart';
 import 'package:job_finder/core/view%20model/jobVM.dart';
+import 'package:job_finder/core/view%20model/request_VM.dart';
 import 'package:job_finder/core/view%20model/userVM.dart';
 import 'package:job_finder/core/view/screens/loginScreen.dart';
 import 'package:job_finder/core/view/screens/main_screen.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ChatProvider()),
         ChangeNotifierProvider<ImageProv>(create: (_) => ImageProv()),
         ChangeNotifierProvider<BlogVm>(create: (_) => BlogVm()),
+        ChangeNotifierProvider<LikeVm>(create: (_) => LikeVm()),
         ChangeNotifierProvider<CVVM>(
           create: (_) => CVVM(),
         ),
@@ -48,6 +50,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<JobVM>(
           create: (_) => JobVM(),
+        ),
+        ChangeNotifierProvider<RequstVM>(
+          create: (_) => RequstVM(),
         ),
         ChangeNotifierProvider<FollowVM>(
           create: (_) => FollowVM(),

@@ -5,24 +5,24 @@ import 'package:job_finder/core/model/conversation_model.dart';
 import 'package:job_finder/core/model/message_model.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
+import 'dart:async';
 
 class ChatProvider with ChangeNotifier {
-  List<Message> _messages = [];
-  List<Message> get messages => _messages;
+  final _messageController = StreamController<List<Message>>.broadcast();
+  final _conversationController = StreamController<List<Conversation>>.broadcast();
 
+  Stream<List<Message>> get messageStream => _messageController.stream;
+  Stream<List<Conversation>> get conversationStream => _conversationController.stream;
+
+  List<Message> _messages = [];
   List<Conversation> _conversations = [];
-  List<Conversation> get conversations => _conversations;
 
   ChatProvider() {
     initSocket();
-    // _initializeSocket();
-    // fetchConversations(userId!);
+    joinConversation();
   }
+
   late IO.Socket _socket;
-  void initstate() {
-//  _initializeSocket();
-    // fetchConversations(userId!);
-  }
 
   initSocket() {
     _socket = IO.io("ws://${APIRoute.socketRoot}:3000", <String, dynamic>{
@@ -34,46 +34,36 @@ class ChatProvider with ChangeNotifier {
       _socket.emit('join all conversations', userId);
       print("Connection established");
     });
-    _socket.onDisconnect((_) => print("connection Disconnection"));
-    _socket.onConnectError((err) => print("tehe errrr is ${err}"));
-    _socket.onError((err) => print("tehe errrr is ${err}"));
-    _socket.on('connection', (_) {
-      print('connected to websocket');
-    });
+    _socket.onDisconnect((_) => print("Connection disconnected"));
+    _socket.onConnectError((err) => print("Connection error: $err"));
+    _socket.onError((err) => print("Error: $err"));
 
     _socket.on('chat message', (data) {
       print("Received chat message: $data");
-      messages.add(Message.fromJson(data));
-      print('fetchConversations is true');
-      // fetchConversations(userId!);
+      _messages.add(Message.fromJson(data));
+      _messageController.add(_messages);
+        fetchConversations(userId!);      
       _socket.on('message sent', (_) {
-        fetchConversations(userId!);
       });
-
       notifyListeners();
     });
 
     _socket.on('conversations', (data) {
       print("Received conversations: $data");
-      _conversations = [];
-      for (var element in data) {
-        conversations.add(Conversation.fromJson(element));
-      }
-      // _conversations = (data as List).map((e) {
-      //   print(e["senderNeme"]);
-      //   return ;
-      // }).toList();
-      notifyListeners();
-    });
-    _socket.on('fetch messages', (data) {
-      print("Received fetch messages: $data");
-      print(data);
-      _messages = (data as List).map((e) => Message.fromJson(e)).toList();
+      _conversations = (data as List).map((e) => Conversation.fromJson(e)).toList();
+      _conversationController.add(_conversations);
       notifyListeners();
     });
 
+    _socket.on('fetch messages', (data) {
+      print("Received fetch messages: $data");
+      _messages=[];
+      _messages = (data as List).map((e) => Message.fromJson(e)).toList();
+      _messageController.add(_messages);
+    });
+
     _socket.on('disconnect', (_) {
-      print('disconnected from websocket');
+      print('Disconnected from websocket');
     });
   }
 
@@ -82,36 +72,28 @@ class ChatProvider with ChangeNotifier {
     required String? conversationId,
     required String? sender,
     required String? recipient,
-  }) async {
+  }) {
     _socket.emit('chat message', {
       "conversationId": conversationId,
       "sender": sender,
       "recipient": recipient,
       "text": message
     });
-    // fetchConversations(userId!);
   }
 
-  void joinConversation({
-    required String? conversationId,
-    required String? sender,
-    required String? recipient,
-  }) {
-    _socket.emit('join conversation', {
-      "conversationId": conversationId,
-      "sender": sender,
-      "recipient": recipient,
-    });
+  void joinConversation() {
+    _socket.emit('join all conversations', userId);
   }
 
   void fetchConversations(String userId) {
     _socket.emit('conversations', userId);
   }
 
-  void fetchMessages(
-      {String? conversationId,
-      required String senderId,
-      required String recipientId}) {
+  void fetchMessages({
+    String? conversationId,
+    required String senderId,
+    required String recipientId,
+  }) {
     _socket.emit('fetch messages', {
       "conversationId": conversationId,
       "senderId": senderId,
@@ -119,7 +101,10 @@ class ChatProvider with ChangeNotifier {
     });
   }
 
-  update() {
-    notifyListeners();
+  void dispose() {
+    _messageController.close();
+    // _conversationController.close();
+    _socket.dispose();
+    super.dispose();
   }
 }

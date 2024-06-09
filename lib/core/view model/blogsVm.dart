@@ -10,10 +10,10 @@ class BlogVm extends ChangeNotifier {
   List allBlogsUser = [];
   List allPubilcation = [];
   Future getArticlesByType(
-      {required String userType, required String categoeryName}) async {
+      {required String userType, required String categoeryName,required String userID}) async {
     try {
       Response response = await dio.get(APIRoute.getArticlesByType,
-          data: {"userType": userType, "blogCategorey": categoeryName});
+          data: {"userType": userType, "blogCategorey": categoeryName,  "userlike":userID});
       allBlogs = (response.data['articles'] as List)
           .map((e) => (BlogsModel.formjosn(e)))
           .toList();
@@ -39,7 +39,7 @@ class BlogVm extends ChangeNotifier {
   //   return allBlogsUser;
   // }
 
-  Future<List> getUserBlogs(iD) async {
+  Future<List> getUserBlogs(String iD) async {
     try {
       Response response = await dio.get(APIRoute.getUserBlogs(iD));
       allPubilcation =

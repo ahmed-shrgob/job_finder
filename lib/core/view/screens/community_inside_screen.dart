@@ -70,7 +70,7 @@ class CommunityInsideScreen extends StatelessWidget {
               builder: (context, value, child) => TabBarView(children: [
                 FutureBuilder(
                   future: value.getArticlesByType(
-                      userType: "company", categoeryName: communtyName),
+                      userType: "company", categoeryName: communtyName, userID: userId!),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done &&
                         snapshot.hasData) {
@@ -93,7 +93,7 @@ class CommunityInsideScreen extends StatelessWidget {
                 ),
                 FutureBuilder(
                   future: value.getArticlesByType(
-                      userType: "user", categoeryName: communtyName),
+                      userType: "user", categoeryName: communtyName, userID: userId!),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done &&
                         snapshot.hasData) {

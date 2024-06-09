@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:job_finder/chat_pro.dart';
 import 'package:job_finder/constants/cons_colors.dart';
 import 'package:job_finder/constants/cons_user_data.dart';
+import 'package:job_finder/core/model/message_model.dart';
 import 'package:job_finder/helper/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -9,97 +10,107 @@ class ChatScreen extends StatefulWidget {
   final String? conversationId;
   final String id;
   final String name;
-  ChatScreen(
-      {super.key, required this.name, required this.id, this.conversationId});
+
+  ChatScreen({super.key, required this.name, required this.id, this.conversationId});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-final TextEditingController _controller = TextEditingController();
 class _ChatScreenState extends State<ChatScreen> {
+  final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     print("${widget.conversationId} and ${widget.id} and ${widget.name}");
     final chatProvider = Provider.of<ChatProvider>(context, listen: false)
-      ..fetchMessages(
-          senderId: userId!, recipientId: widget.id, conversationId: widget.conversationId)
-      ..joinConversation(
-          sender: userId!, recipient: widget.id, conversationId: widget.conversationId);
+      ..fetchMessages(senderId: userId!, recipientId: widget.id, conversationId: widget.conversationId);
 
     return Scaffold(
       appBar: AppBar(
-    backgroundColor: AppColor.mainColor,
-    elevation: 0,
-    leading: IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    ),
-    title: Row(
-      children: [
-        CircleAvatar(
-          child: Icon(
-            Icons.person,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.blueGrey,
+        backgroundColor: AppColor.mainColor,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-        SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                child: Text(
-                  widget.name,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+        title: Row(
+          children: [
+            CircleAvatar(
+              child: Icon(
+                Icons.person,
+                color: Colors.white,
               ),
-            ],
-          ),
+              backgroundColor: Colors.blueGrey,
+            ),
+            SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ],
-    ),
-    actions: [
-      PopupMenuButton<String>(
-        onSelected: (String value) {
-          // تنفيذ عملية الخيار المحدد هنا
-        },
-        itemBuilder: (BuildContext context) {
-          return {'الإعدادات', 'معلومات '}.map((String choice) {
-            return PopupMenuItem<String>(
-              value: choice,
-              child: Text(choice),
-            );
-          }).toList();
-        },
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (String value) {
+              // تنفيذ عملية الخيار المحدد هنا
+            },
+            itemBuilder: (BuildContext context) {
+              return {'الإعدادات', 'معلومات '}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
       ),
-    ],
-  ),
       body: Column(
         children: [
           Expanded(
-            child: Consumer<ChatProvider>(
-              builder: (context, chatProvider, child) {
+            child: StreamBuilder<List<Message>>(
+              stream: chatProvider.messageStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text("No messages yet"));
+                }
+
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (_scrollController.hasClients) {
+                    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                  }
+                });
+
+                final messages = snapshot.data!;
+
                 return ListView.builder(
-                  reverse: true,
-                  itemCount: chatProvider.messages.length,
+                  controller: _scrollController,
+                  // reverse: true,
+                  itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    final message = chatProvider.messages[index];
+                    final message = messages[index];
                     return Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                       child: Align(
-                        alignment: message.sender == userId
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
+                        alignment: message.sender == userId ? Alignment.centerRight : Alignment.centerLeft,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -107,22 +118,18 @@ class _ChatScreenState extends State<ChatScreen> {
                               padding: EdgeInsets.all(12.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20.0),
-                                color: message.sender == userId
-                                    ? AppColor.mainColor
-                                    : Colors.grey[200],
+                                color: message.sender == userId ? AppColor.mainColor : Colors.grey[200],
                               ),
                               child: Text(
-                                "${message.text}",
+                                message.text ?? "",
                                 style: TextStyle(
-                                  color: message.sender == userId
-                                      ? Colors.white
-                                      : Colors.black,
+                                  color: message.sender == userId ? Colors.white : Colors.black,
                                 ),
                               ),
                             ),
                             SizedBox(height: 4),
                             Text(
-                              "${convertTimeforMessage(DateTime.parse(message.createdAt!))}",
+                              convertTimeforMessage(DateTime.parse(message.createdAt!)),
                               style: TextStyle(
                                 fontSize: 11,
                                 color: Colors.grey,
